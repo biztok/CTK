@@ -12,3 +12,6 @@ CMakeFiles/cmake.check_cache
 
 # ignore ctags file
 tags
+
+# ignore directory
+build/
