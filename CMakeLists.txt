@@ -471,7 +471,7 @@ ctk_lib_option(Core
                "Build the Core library" ON)
 
 ctk_lib_option(PluginFramework
-               "Build the Plugin Framework" OFF
+               "Build the Plugin Framework" ON
                CTK_ENABLE_PluginFramework)
 
 ctk_lib_option(Widgets
@@ -661,7 +661,7 @@ set(plugin_list
   )
 
 foreach(_plugin ${plugin_list})
-  ctk_plugin_option(${_plugin} "Build the ${_plugin} plugin." OFF)
+  ctk_plugin_option(${_plugin} "Build the ${_plugin} plugin." ON)
 endforeach()
 
 # Plug-ins related to the PluginGenerator application

@@ -166,7 +166,19 @@ macro(ctkMacroBuildPlugin)
   set(MY_QRC_SRCS)
 
   # Wrap
-  if(CTK_QT_VERSION VERSION_EQUAL "5")
+  if(CTK_QT_VERSION VERSION_GREATER "5")
+    if(MY_MOC_SRCS)
+      # this is a workaround for Visual Studio. The relative include paths in the generated
+      # moc files can get very long and can't be resolved by the MSVC compiler.
+      foreach(moc_src ${MY_MOC_SRCS})
+        qt_wrap_cpp(MY_MOC_CPP ${moc_src} OPTIONS -f${moc_src} ${MY_MOC_OPTIONS} TARGET ${lib_name})
+      endforeach()
+    endif()
+    qt_wrap_ui(MY_UI_CPP ${MY_UI_FORMS})
+    if(DEFINED MY_RESOURCES)
+      qt_add_resources(MY_QRC_SRCS ${MY_RESOURCES})
+    endif()
+  else()
     set(target)
     if(Qt5Core_VERSION VERSION_GREATER "5.2.0")
       set(target TARGET ${lib_name})
@@ -175,15 +187,13 @@ macro(ctkMacroBuildPlugin)
       # this is a workaround for Visual Studio. The relative include paths in the generated
       # moc files can get very long and can't be resolved by the MSVC compiler.
       foreach(moc_src ${MY_MOC_SRCS})
-        QT5_WRAP_CPP(MY_MOC_CPP ${moc_src} OPTIONS -f${moc_src} -DHAVE_QT5 ${MY_MOC_OPTIONS} ${target})
+        QT5_WRAP_CPP(MY_MOC_CPP ${moc_src} OPTIONS -f${moc_src} ${MY_MOC_OPTIONS} ${target})
       endforeach()
     endif()
     QT5_WRAP_UI(MY_UI_CPP ${MY_UI_FORMS})
     if(DEFINED MY_RESOURCES)
       QT5_ADD_RESOURCES(MY_QRC_SRCS ${MY_RESOURCES})
     endif()
-  else()
-    message(FATAL_ERROR "Support for Qt${CTK_QT_VERSION} is not implemented")
   endif()
 
   # Add the generated manifest qrc file
@@ -221,7 +231,8 @@ macro(ctkMacroBuildPlugin)
   if(CTK_QT_VERSION VERSION_EQUAL "5")
       qt5_create_translation(_plugin_qm_files ${MY_SRCS} ${MY_UI_FORMS} ${MY_TRANSLATIONS})
   else()
-    message(FATAL_ERROR "Support for Qt${CTK_QT_VERSION} is not implemented")
+	qt_create_translation(_plugin_qm_files ${MY_SRCS} ${MY_UI_FORMS} ${MY_TRANSLATIONS})
+#    message(FATAL_ERROR "Support for Qt${CTK_QT_VERSION} is not implemented")
   endif()
 
   endif()

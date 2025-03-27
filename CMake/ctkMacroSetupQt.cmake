@@ -35,7 +35,7 @@ macro(ctkMacroSetupQt)
     if(CTK_LIB_Widgets
       OR CTK_LIB_DICOM/Widgets
       )
-      list(APPEND CTK_QT5_COMPONENTS Svg)
+      list(APPEND CTK_QT_COMPONENTS Svg)
     endif()
 
     if(CTK_LIB_Widgets
