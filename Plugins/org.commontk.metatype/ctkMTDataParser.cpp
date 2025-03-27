@@ -29,6 +29,8 @@
 
 #include <QCoreApplication>
 #include <QDebug>
+//#include <QStringRef>
+
 
 const QString ctkMTDataParser::METADATA = "MetaData";
 const QString ctkMTDataParser::LOCALIZATION = "localization";
@@ -82,7 +84,7 @@ QHash<QString, ctkObjectClassDefinitionImplPtr> ctkMTDataParser::doParse()
   CTK_DEBUG(logger) << "Starting to parse metadata";
   while (_dp_xmlReader.readNextStartElement())
   {
-    QStringRef name = _dp_xmlReader.name();
+    auto name = _dp_xmlReader.name();
     if (name.compare(METADATA, Qt::CaseInsensitive) == 0)
     {
       metaDataHandler();
@@ -117,7 +119,7 @@ void ctkMTDataParser::metaDataHandler()
   _dp_xmlReader.readNext();
   while(!_dp_xmlReader.hasError() && _dp_xmlReader.readNextStartElement())
   {
-    QStringRef name = _dp_xmlReader.name();
+    auto name = _dp_xmlReader.name();
     if (name.compare(DESIGNATE, Qt::CaseInsensitive) == 0)
     {
       designateHandler();
@@ -217,7 +219,7 @@ void ctkMTDataParser::designateHandler()
 
   while (!_dp_xmlReader.hasError() && _dp_xmlReader.readNextStartElement())
   {
-    QStringRef name = _dp_xmlReader.name();
+    auto name = _dp_xmlReader.name();
     if (name.compare(OBJECT, Qt::CaseInsensitive) == 0)
     {
      objectHandler(info);
@@ -246,7 +248,7 @@ void ctkMTDataParser::ocdHandler()
 {
   Q_ASSERT(_dp_xmlReader.isStartElement() && _dp_xmlReader.name().compare(OCD, Qt::CaseInsensitive) == 0);
 
-  QStringRef name = _dp_xmlReader.name();
+  auto name = _dp_xmlReader.name();
   QXmlStreamAttributes atts = _dp_xmlReader.attributes();
   QString ocd_name_val = atts.value(NAME).toString();
   if (ocd_name_val.isNull())
@@ -277,7 +279,7 @@ void ctkMTDataParser::ocdHandler()
   QList<ctkAttributeDefinitionImplPtr> ad_list;
   while (!_dp_xmlReader.hasError() && _dp_xmlReader.readNextStartElement())
   {
-    QStringRef name2 = _dp_xmlReader.name();
+    auto name2 = _dp_xmlReader.name();
     if (name2.compare(AD, Qt::CaseInsensitive) == 0)
     {
       attributeDefinitionHandler(ad_list);
@@ -332,7 +334,7 @@ void ctkMTDataParser::objectHandler(DesignateInfo& designateInfo)
 
   while (!_dp_xmlReader.hasError() && _dp_xmlReader.readNextStartElement())
   {
-    QStringRef name = _dp_xmlReader.name();
+    auto name = _dp_xmlReader.name();
     if (name.compare(ATTRIBUTE, Qt::CaseInsensitive) == 0)
     {
       attributeHandler();
@@ -378,7 +380,7 @@ void ctkMTDataParser::attributeDefinitionHandler(QList<ctkAttributeDefinitionImp
   }
 
   int dataType;
-  QStringRef ad_type_val = atts.value("", TYPE);
+  auto ad_type_val = atts.value("", TYPE);
   if (ad_type_val.compare(STRING, Qt::CaseInsensitive) == 0)
   {
     dataType = QVariant::String;
@@ -479,7 +481,7 @@ void ctkMTDataParser::attributeDefinitionHandler(QList<ctkAttributeDefinitionImp
   QStringList optionValues;
   while (!_dp_xmlReader.hasError() && _dp_xmlReader.readNextStartElement())
   {
-    QStringRef name2 = _dp_xmlReader.name();
+    auto name2 = _dp_xmlReader.name();
     if (name2.compare(OPTION, Qt::CaseInsensitive) == 0)
     {
       OptionInfo optionInfo;

@@ -46,6 +46,8 @@ set(PLUGIN_resources
 #Compute the plugin dependencies
 ctkFunctionGetTargetLibraries(PLUGIN_target_libraries)
 
+list(APPEND PLUGIN_target_libraries Qt${CTK_QT_VERSION}::Core5Compat)
+
 ctkMacroBuildPlugin(
   NAME ${PROJECT_NAME}
   EXPORT_DIRECTIVE ${PLUGIN_export_directive}
