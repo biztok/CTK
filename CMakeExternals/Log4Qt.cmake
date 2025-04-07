@@ -78,7 +78,7 @@ if(NOT DEFINED Log4Qt_DIR)
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
-  set(Log4Qt_INSTALL_DIR ${                                    })
+  set(Log4Qt_INSTALL_DIR ${ep_install_dir})
   set(Log4Qt_DIR ${Log4Qt_INSTALL_DIR}/lib/cmake/Log4Qt/)
 
   #-----------------------------------------------------------------------------
