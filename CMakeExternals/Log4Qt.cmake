@@ -72,10 +72,13 @@ if(NOT DEFINED Log4Qt_DIR)
     CMAKE_CACHE_ARGS
       ${ep_common_cache_args}
       ${ep_cache_args}
+	CMAKE_ARGS
+	  -DLOG4QT_ENABLE_TESTS:BOOL=OFF
+	  -DLOG4QT_ENABLE_EXAMPLES:BOOL=OFF
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
-  set(Log4Qt_INSTALL_DIR ${ep_install_dir})
+  set(Log4Qt_INSTALL_DIR ${                                    })
   set(Log4Qt_DIR ${Log4Qt_INSTALL_DIR}/lib/cmake/Log4Qt/)
 
   #-----------------------------------------------------------------------------
