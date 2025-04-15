@@ -105,7 +105,6 @@ set(KIT_SRCS
   ctkHistogram.h
   ctkIconEnginePlugin.cpp
   ctkIconEnginePlugin.h
-  ctkIconEnginePlugin_qt5.h
   ctkLanguageComboBox.cpp
   ctkLanguageComboBox.h
   ctkLayoutFactory.cpp
@@ -260,6 +259,7 @@ set(KIT_MOC_SRCS
   ctkFlowLayout.h
   ctkFontButton.h
   ctkHistogram.h
+  ctkIconEnginePlugin.h
   ctkLanguageComboBox.h
   ctkLayoutFactory.h
   ctkLayoutManager.h
@@ -313,12 +313,6 @@ set(KIT_MOC_SRCS
   ctkWorkflowWidgetStep_p.h
   )
 
-if(CTK_QT_VERSION VERSION_EQUAL "5")
-  list(APPEND KIT_MOC_SRCS ctkIconEnginePlugin_qt5.h)
-else()
-  message(FATAL_ERROR "Support for Qt${CTK_QT_VERSION} is not implemented")
-endif()
-
 # Headers that should run through moc without adding
 # the generated cpp file to the source list
 set(KIT_GENERATE_MOC_SRCS
@@ -352,7 +346,11 @@ set(KIT_resources
 # The following macro will read the target libraries from the file 'target_libraries.cmake'
 ctkFunctionGetTargetLibraries(KIT_target_libraries)
 
-  list(APPEND KIT_target_libraries Qt5::Widgets Qt5::Xml Qt5::OpenGL)
+list(APPEND KIT_target_libraries Qt${CTK_QT_VERSION}::Widgets Qt${CTK_QT_VERSION}::Xml Qt${CTK_QT_VERSION}::OpenGL)
+
+if(CTK_QT_VERSION VERSION_GREATER "5")
+  list(APPEND KIT_target_libraries Qt${CTK_QT_VERSION}::OpenGLWidgets)
+endif()
 
 # A player and a translator must be added for custom Qt widgets
 if(CTK_USE_QTTESTING)
