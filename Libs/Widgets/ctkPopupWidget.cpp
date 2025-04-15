@@ -20,7 +20,6 @@
 
 // Qt includes
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QDialog>
 #include <QDir>
 #include <QEvent>
@@ -134,7 +133,11 @@ bool ctkPopupWidgetPrivate::eventFilter(QObject* obj, QEvent* event)
   }
   else if (event->type() == QEvent::RequestSoftwareInputPanel)
   {
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 0))
+    widget->window()->activateWindow();
+#else
     qApp->setActiveWindow(widget->window());
+#endif
   }
   return false;
 }
@@ -416,7 +419,7 @@ void ctkPopupWidget::leaveEvent(QEvent* event)
 }
 
 // --------------------------------------------------------------------------
-void ctkPopupWidget::enterEvent(QEvent* event)
+void ctkPopupWidget::enterEvent(QEnterEvent* event)
 {
   Q_D(ctkPopupWidget);
   QTimer::singleShot(d->ShowDelay, this, SLOT(updatePopup()));

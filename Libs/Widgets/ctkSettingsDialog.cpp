@@ -23,10 +23,8 @@
 #include <QMap>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QSettings>
 
 // CTK includes
-#include "ctkSettingsPanel.h"
 #include "ctkSettingsDialog.h"
 #include "ui_ctkSettingsDialog.h"
 #include "ctkLogger.h"
@@ -140,7 +138,7 @@ void ctkSettingsDialogPrivate::updatePanelTitle(ctkSettingsPanel* panel)
 {
   QTreeWidgetItem* panelItem = this->item(panel);
   QString title = panelItem->text(0);
-  title.replace(QRegExp("\\*$"),"");
+  title.replace(QRegularExpression("\\*$"),"");
   if (!panel->changedSettings().isEmpty())
   {
     title.append('*');

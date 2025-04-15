@@ -152,7 +152,7 @@ void ctkConsolePrivate::init()
   this->RunFileButton->setVisible(false);
 
   QVBoxLayout * layout = new QVBoxLayout(q);
-  layout->setMargin(0);
+  layout->setContentsMargins(QMargins());
   layout->setSpacing(0);
   layout->addWidget(this);
   layout->addWidget(this->RunFileButton);
@@ -561,7 +561,11 @@ void ctkConsolePrivate::keyPressEvent(QKeyEvent* e)
     return;
   }
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+  if (this->CompleterShortcuts.contains(e->keyCombination()))
+#else
   if (this->CompleterShortcuts.contains(e->key() + e->modifiers()))
+#endif
   {
     e->accept();
     this->updateCompleter();
@@ -815,7 +819,7 @@ void ctkConsolePrivate::internalExecuteCommand()
   QString command = this->commandBuffer();
   if (this->EditorHints & ctkConsole::RemoveTrailingSpaces)
   {
-    command.replace(QRegExp("\\s*$"), ""); // Remove trailing spaces
+    command.replace(QRegularExpression("\\s*$"), ""); // Remove trailing spaces
     this->commandBuffer() = command; // Update buffer
   }
 
@@ -841,10 +845,11 @@ void ctkConsolePrivate::internalExecuteCommand()
   QString indent;
   if (this->EditorHints & ctkConsole::AutomaticIndentation)
   {
-    QRegExp regExp("^(\\s+)");
-    if (regExp.indexIn(command) != -1)
+    QRegularExpression regExp("^(\\s+)");
+    QRegularExpressionMatch match = regExp.match(command);
+    if (match.hasMatch())
     {
-      indent = regExp.cap(1);
+      indent = match.captured(1);
     }
   }
 
@@ -862,7 +867,7 @@ void ctkConsolePrivate::processInput()
 
   if (this->EditorHints & ctkConsole::RemoveTrailingSpaces)
   {
-    command.replace(QRegExp("\\s*$"), ""); // Remove trailing spaces
+    command.replace(QRegularExpression("\\s*$"), ""); // Remove trailing spaces
     this->commandBuffer() = command; // Update buffer
   }
 
@@ -1086,7 +1091,7 @@ void ctkConsolePrivate::pasteText(const QString& text)
   if (this->EditorHints & ctkConsole::SplitCopiedTextByLine)
   {
     // Execute line by line
-    QStringList lines = text.split(QRegExp("(?:\r\n|\r|\n)"));
+    QStringList lines = text.split(QRegularExpression("(?:\r\n|\r|\n)"));
     for(int i=0; i < lines.count(); ++i)
     {
       this->switchToUserInputTextColor(&textCursor);

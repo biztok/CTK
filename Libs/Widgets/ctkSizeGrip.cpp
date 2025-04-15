@@ -28,6 +28,7 @@
 #include <QStyle>
 #include <QStyleOption>
 #include <QPainter>
+#include <QPoint>
 
 // CTK includes
 #include "ctkSizeGrip.h"
@@ -223,9 +224,13 @@ QSize ctkSizeGrip::sizeHint() const
       break;
   };
   QStyleOption opt(0);
-  opt.init(this);
+  opt.initFrom(this);
+#if (QT_VERSION < QT_VERSION_CHECK(6,0,0))
   return (this->style()->sizeFromContents(contents, &opt, minSize, this).
           expandedTo(QApplication::globalStrut()));
+#else
+  return this->style()->sizeFromContents(contents, &opt, minSize, this);
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -262,7 +267,7 @@ void ctkSizeGrip::paintEvent(QPaintEvent *event)
     default:
     {
       QStyleOptionSizeGrip opt;
-      opt.init(this);
+      opt.initFrom(this);
       opt.corner = this->isLeftToRight() ? Qt::BottomRightCorner : Qt::BottomLeftCorner;
       style()->drawControl(QStyle::CE_SizeGrip, &opt, &painter, this);
       break;
@@ -300,7 +305,11 @@ void ctkSizeGrip::mousePressEvent(QMouseEvent * e)
   }
 
   Q_D(ctkSizeGrip);
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+  d->StartPos = e->globalPosition().toPoint();
+#else
   d->StartPos = e->globalPos();
+#endif
   d->Pressed = true;
   d->WidgetGeom = d->WidgetToResize->geometry();
   d->WidgetMinSize = d->WidgetToResize->minimumSize();
@@ -323,7 +332,11 @@ void ctkSizeGrip::mouseMoveEvent(QMouseEvent * e)
     return;
   }
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+  QPoint newPos(e->globalPosition().toPoint());
+#else
   QPoint newPos(e->globalPos());
+#endif
   QSize offset(newPos.x() - d->StartPos.x(), newPos.y() - d->StartPos.y());
 
   QSize widgetSizeHint = d->WidgetGeom.size();
@@ -357,7 +370,9 @@ void ctkSizeGrip::mouseMoveEvent(QMouseEvent * e)
     }
   }
 
+#if (QT_VERSION < QT_VERSION_CHECK(6,0,0))
   widgetSizeHint = widgetSizeHint.expandedTo(QApplication::globalStrut());
+#endif
 
   this->setWidgetSizeHint(
     QSize(d->Orientations & Qt::Horizontal ? widgetSizeHint.width() : -1,
